@@ -1,25 +1,15 @@
-from django.http import HttpResponse
+from django.shortcuts import render
+from .models import Book
 from django.views.generic import DetailView
-from .models import Book, Library
+from .models import Library
 
+# Function-Based View
 def list_books(request):
-    """
-    Function-based view that returns a plain text list of books:
-    '<title> by <author>'
-    """
-    books = Book.objects.select_related("author").all()
-    if not books.exists():
-        return HttpResponse("No books found.", content_type="text/plain")
+    books = Book.objects.all()
+    return render(request, 'list_books.html', {'books': books})
 
-    lines = []
-    for book in books:
-        author = getattr(book.author, "name", None) or str(book.author)
-        lines.append(f"{book.title} by {author}")
-
-    return HttpResponse("\n".join(lines), content_type="text/plain")
-
-
+# Class-Based View
 class LibraryDetailView(DetailView):
     model = Library
-    template_name = "library_detail.html"
-    context_object_name = "library"
+    template_name = 'library_detail.html'
+    context_object_name = 'library'
