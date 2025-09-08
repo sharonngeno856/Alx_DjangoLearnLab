@@ -1,15 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>List of Books</title>
-</head>
-<body>
-    <h1>Books Available:</h1>
-    <ul>
-        {% for book in books %}
-        <li>{{ book.title }} by {{ book.author.name }}</li>
-        {% endfor %}
-    </ul>
-</body>
-</html>
+from django.http import HttpResponse
+from .models import Book
+
+def list_books(request):
+    books = Book.objects.all()
+    # Build a plain text response
+    response_text = "\n".join([f"{book.title} by {book.author.name}" for book in books])
+    return HttpResponse(response_text, content_type="text/plain")
